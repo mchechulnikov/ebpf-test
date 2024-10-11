@@ -1,6 +1,6 @@
 FROM ubuntu:22.04
 
-# Установим необходимые пакеты
+# Устанавливаем необходимые пакеты
 RUN apt-get update && apt-get install -y \
     build-essential \
     bpftrace \
@@ -11,10 +11,10 @@ COPY . /usr/src/app
 
 WORKDIR /usr/src/app
 
-# Соберем отслеживаемую программу
-RUN gcc -o traced_program traced_program.c
+# Собираем отслеживаемую программу без оптимизаций
+RUN gcc -O0 -o traced_program traced_program.c
 
-# Сделаем run.sh исполняемым
+# Делаем скрипт исполняемым
 RUN chmod +x run.sh
 
 CMD ["./run.sh"]
