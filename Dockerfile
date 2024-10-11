@@ -14,4 +14,7 @@ WORKDIR /usr/src/app
 # Соберем отслеживаемую программу
 RUN gcc -o traced_program traced_program.c
 
+# Сделаем run.sh исполняемым
+RUN chmod +x run.sh
+
 CMD ["./run.sh"]
