@@ -1,3 +1,56 @@
+.idea/
+*.iml
+
+
+# Gradle-specific files
+.gradle/
+build/
+
+# Ignore Gradle Wrapper files
+!gradle/wrapper/gradle-wrapper.jar
+
+# Other artifacts
+out/
+**/build/
+
+# Ignore Gradle cache (Windows)
+.gradle/
+
+# Eclipse specific files
+*.classpath
+*.project
+*.settings/
+
+# IntelliJ IDEA specific files
+*.idea/
+*.iml
+*.iws
+
+# Android Studio
+.cxx/
+.externalNativeBuild/
+
+# OS-specific files
+# Windows
+thumbs.db
+Thumbs.db
+
+# macOS
+.DS_Store
+
+# Linux
+*~
+
+# Log files
+*.log
+
+# Temporary files
+*.tmp
+*.swp
+*.swo
+
+
+
 # Compiled class file
 *.class
 
