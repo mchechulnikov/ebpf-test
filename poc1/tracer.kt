@@ -15,15 +15,33 @@ fun main() {
     val bpftraceScript =
             """
         uprobe:"$cProgramPath":$functionName
+        /pid == $pid/
         {
-            printf("Function: %s, Param: %d\n", "$functionName", arg0);
+            // printf("%s, arg0: %d\n", probe, arg0);
+            @args[tid] = arg0;
+        }
+
+        tracepoint:syscalls:sys_enter_write
+        /args->fd == 1/
+        {
+            if (pid == $pid) {
+                printf("Write to stdout detected: %s\n", str(args->buf));
+            }
+        }
+
+        uretprobe:"$cProgramPath":"$functionName"
+        /pid == $pid/
+        {
+            printf("%s, param: %d, result: %d\n", probe, @args[tid], retval);
+            delete(@args[tid]);
         }
     """.trimIndent()
 
     val scriptFile = "/app/trace_script.bt"
     File(scriptFile).writeText(bpftraceScript)
 
-    val bpftraceProcess = ProcessBuilder("bpftrace", scriptFile).redirectErrorStream(true).start()
+    val bpftraceProcess =
+            ProcessBuilder("bpftrace", "-p", "$pid", scriptFile).redirectErrorStream(true).start()
 
     val reader = BufferedReader(InputStreamReader(bpftraceProcess.inputStream))
 

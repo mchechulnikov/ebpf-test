@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <unistd.h>
 
-void my_function(int param) {
+int my_function(int param) {
     printf("Function called with param: %d\n", param);
+    return 42;
 }
 
 int main() {

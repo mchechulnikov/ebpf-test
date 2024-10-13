@@ -9,4 +9,4 @@ build:
 	docker build -t $(IMAGE_NAME) .
 
 run:
-	docker run --rm -it --privileged --name $(CONTAINER_NAME) $(IMAGE_NAME)
+	docker run --rm -it --privileged -v /sys/kernel/debug/:/sys/kernel/debug:rw --pid=host --name $(CONTAINER_NAME) $(IMAGE_NAME)
