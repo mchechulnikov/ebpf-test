@@ -1,7 +1,7 @@
 #!/bin/bash
 
 chmod +x ./target
-./target &
+./target > /dev/null 2>&1 &
 
 TARGET_PID=$!
 TARGET_PATH=$(realpath ./target)

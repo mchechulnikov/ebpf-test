@@ -34,7 +34,7 @@ internal class BpfTraceTracer(
             process.inputStream.bufferedReader().use { reader ->
                 while (process.isAlive || reader.ready()) {
                     reader.readLine()?.let { line ->
-                        println(line)
+                        println("[bpftrace]: $line")
                     }
                 }
             }
@@ -42,7 +42,7 @@ internal class BpfTraceTracer(
             process.errorStream.bufferedReader().use { errorReader ->
                 while (process.isAlive || errorReader.ready()) {
                     errorReader.readLine()?.let { errorLine ->
-                        println("[ERR]: $errorLine")
+                        println("[bpftrace err]: $errorLine")
                     }
                 }
             }
@@ -57,13 +57,14 @@ internal class BpfTraceTracer(
         uprobe:"${tracee.path}":${target.functionName}
         /pid == ${tracee.pid}/
         {
+            printf("%lld %s, param: %d\n", nsecs, probe, arg0);
             @args[tid] = arg0;
         }
 
         uretprobe:"${tracee.path}":"${target.functionName}"
         /pid == ${tracee.pid}/
         {
-            printf("%s, param: %d, result: %d\n", probe, @args[tid], retval);
+            printf("%lld %s, param: %d, result: %d\n", nsecs, probe, @args[tid], retval);
             delete(@args[tid]);
         }
     """.trimIndent()
