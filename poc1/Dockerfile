@@ -17,14 +17,23 @@ RUN wget https://github.com/JetBrains/kotlin/releases/download/v1.8.0/kotlin-com
     && rm kotlin-compiler-1.8.0.zip
 ENV PATH="/opt/kotlinc/bin:${PATH}"
 
-COPY . /app
+RUN mkdir /app
 WORKDIR /app
 
-# traced program
-RUN gcc -O0 -o target ./src/main/c/target.c
+COPY build.gradle.kts /app
+COPY settings.gradle.kts app
+COPY gradle /app/gradle
+COPY gradlew /app
+RUN ./gradlew build --no-daemon
+
+COPY . /app
+
 
 # build tracer
 RUN ./gradlew shadowJar --no-daemon
+
+# build tracee
+RUN gcc -O0 -o target ./src/main/c/target.c
 
 RUN chmod +x ./run.sh
 

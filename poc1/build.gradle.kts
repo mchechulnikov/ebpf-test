@@ -11,6 +11,7 @@ repositories {
 }
 
 dependencies {
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
     implementation("io.insert-koin:koin-core:4.0.0")
     testImplementation(kotlin("test"))
 }
