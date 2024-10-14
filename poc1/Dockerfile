@@ -21,7 +21,7 @@ COPY . /app
 WORKDIR /app
 
 # traced program
-RUN gcc -g -O0 -o target ./src/main/c/target.c
+RUN gcc -O0 -o target ./src/main/c/target.c
 
 # build tracer
 RUN ./gradlew shadowJar --no-daemon

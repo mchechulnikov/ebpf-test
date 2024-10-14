@@ -67,14 +67,13 @@ internal class BpfTraceTracer(
             printf("%lld %s, param: %d, result: %d\n", nsecs, probe, @args[tid], retval);
             delete(@args[tid]);
         }
+        
+        tracepoint:syscalls:sys_enter_write
+        /args->fd == 1/
+        {
+            if (pid == ${tracee.pid}) {
+                printf("Write to stdout detected: %s\n", str(args->buf));
+            }
+        }
     """.trimIndent()
 }
-
-
-//        tracepoint:syscalls:sys_enter_write
-//        /args->fd == 1/
-//        {
-//            if (pid == $pid) {
-//                printf("Write to stdout detected: %s\n", str(args->buf));
-//            }
-//        }
