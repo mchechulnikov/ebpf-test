@@ -24,17 +24,29 @@ COPY build.gradle.kts /app
 COPY settings.gradle.kts app
 COPY gradle /app/gradle
 COPY gradlew /app
+COPY gradle.properties /app
 RUN ./gradlew build --no-daemon
 
-COPY . /app
-
+RUN mkdir /app/src
+COPY src/ /app/src/
 
 # build tracer
 RUN ./gradlew shadowJar --no-daemon
 
-# build tracee
-RUN gcc -O0 -o target ./src/main/c/target.c
+RUN mkdir /app/victims
+COPY victims/ /app/victims/
 
-RUN chmod +x ./run.sh
+## build native tracee
+#RUN gcc -O0 -o target ./victims/target.c
+## run native tracee demo
+#COPY ./run-native.sh /app
+#RUN chmod +x ./run-native.sh
+#CMD ["./run-native.sh"]
 
-CMD ["./run.sh"]
+# build Java tracee
+RUN javac ./victims/Main.java
+# run Java tracee demo
+COPY ./run-java.sh /app
+RUN chmod +x ./run-java.sh
+CMD ["./run-java.sh"]
+

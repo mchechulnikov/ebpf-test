@@ -20,7 +20,7 @@ internal class BpfTraceTracer(
         println("Start tracing with bpftrace...")
 
         val scriptFile = "trace-script.bt"
-        File(scriptFile).writeText(getScript(tracee, target))
+        File(scriptFile).writeText(getScriptForJavaTracee(tracee, target))
 
         val command = listOf(
             bpftrace.path.toString(),
@@ -53,7 +53,7 @@ internal class BpfTraceTracer(
         }
     }
 
-    private fun getScript(tracee: Tracee, target: TraceTarget) = """
+    private fun getScriptForNativeTracee(tracee: Tracee, target: TraceTarget) = """
         uprobe:"${tracee.path}":${target.functionName}
         /pid == ${tracee.pid}/
         {
@@ -76,4 +76,14 @@ internal class BpfTraceTracer(
             }
         }
     """.trimIndent()
+
+    private fun getScriptForJavaTracee(tracee: Tracee, target: TraceTarget) = """
+        uprobe:/proc/${tracee.pid}/root/usr/lib/jvm/java-11-openjdk-arm64/lib/server/libjvm.so:JVM_*
+        {
+            printf("Function called: %s\n", probe);
+            print(ustack);
+        }
+    """.trimIndent()
 }
+
+
